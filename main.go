@@ -5,7 +5,7 @@ import (
 	"image/png"
 	"net/http"
 	"text/template"
-	//"fmt"
+	
 	"log"
 
 	"github.com/boombuler/barcode"
@@ -18,7 +18,7 @@ type Page struct {
 
 func main() {
 
-	port := ""
+	port := os.Getenv("PORT")
 	http.HandleFunc("/", homeHandler)
 	http.HandleFunc("/generator/", viewCodeHandler)
 	log.Println("Listening on", port)
