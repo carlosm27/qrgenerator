@@ -7,9 +7,11 @@ import (
 	"text/template"
 	
 	"log"
+	"os"
 
 	"github.com/boombuler/barcode"
 	"github.com/boombuler/barcode/qr"
+	"github.com/joho/godotenv"
 )
 
 type Page struct {
@@ -18,11 +20,18 @@ type Page struct {
 
 func main() {
 
+	err := godotenv.Load(".env")
+
+	  if err != nil {
+	    log.Fatalf("Error loading .env file")
+	  }
+
 	port := os.Getenv("PORT")
 	http.HandleFunc("/", homeHandler)
 	http.HandleFunc("/generator/", viewCodeHandler)
+	
 	log.Println("Listening on", port)
-	log.Fatal(http.ListenAndServe("", nil))
+	log.Fatal(http.ListenAndServe(":"+port, nil))
 }
 
 func homeHandler( w http.ResponseWriter, r * http.Request) {
