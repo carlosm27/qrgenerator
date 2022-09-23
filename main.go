@@ -5,7 +5,8 @@ import (
 	"image/png"
 	"net/http"
 	"text/template"
-	"fmt"
+	//"fmt"
+	"log"
 
 	"github.com/boombuler/barcode"
 	"github.com/boombuler/barcode/qr"
@@ -16,9 +17,12 @@ type Page struct {
 }
 
 func main() {
+
+	port := "8000"
 	http.HandleFunc("/", homeHandler)
 	http.HandleFunc("/generator/", viewCodeHandler)
-	fmt.Println(http.ListenAndServe(":8000", nil))
+	log.Println("Listening on", port)
+	log.Fatal(http.ListenAndServe(":8000", nil))
 }
 
 func homeHandler( w http.ResponseWriter, r * http.Request) {
