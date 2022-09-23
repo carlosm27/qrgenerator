@@ -22,7 +22,7 @@ func main() {
 	http.HandleFunc("/", homeHandler)
 	http.HandleFunc("/generator/", viewCodeHandler)
 	log.Println("Listening on", port)
-	log.Fatal(http.ListenAndServe(":8000", nil))
+	log.Fatal(http.ListenAndServe("", nil))
 }
 
 func homeHandler( w http.ResponseWriter, r * http.Request) {
