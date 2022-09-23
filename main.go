@@ -18,7 +18,7 @@ type Page struct {
 
 func main() {
 
-	port := "8000"
+	port := ""
 	http.HandleFunc("/", homeHandler)
 	http.HandleFunc("/generator/", viewCodeHandler)
 	log.Println("Listening on", port)
