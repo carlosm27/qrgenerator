@@ -3,41 +3,93 @@ package main
 import (
 
 	"image/png"
-	"net/http"
-	"text/template"
-	
 	"log"
-	"os"
+	"net/http"
+	"encoding/json"
 
-	"github.com/boombuler/barcode"
+	"github.com/gorilla/handlers"
+	"github.com/gorilla/mux"
+
+	"os"
+	"io/ioutil"
+	"fmt"
+	"text/template"
+
+    //"github.com/joho/godotenv"
+    "github.com/spf13/viper"
+    "github.com/boombuler/barcode"
 	"github.com/boombuler/barcode/qr"
-	"github.com/joho/godotenv"
 )
+
+type QrText struct {
+	Text string `json:"text"`
+}
 
 type Page struct {
 	Title string
 }
 
+
+
 func main() {
 
-	err := godotenv.Load()
+	viper.SetConfigFile(".env")
+	viper.ReadInConfig()
 
-	  if err != nil {
-	    log.Fatalf("Error loading .env file")
-	  }
+	//viper.SetConfigType("env")
 
-	port := os.Getenv("PORT")
-	http.HandleFunc("/", homeHandler)
-	http.HandleFunc("/generator/", viewCodeHandler)
+	//viper.AutomaticEnv()
+
+	port := fmt.Sprint(viper.Get("PORT"))
 	
-	log.Println("Listening on", port)
-	log.Fatal(http.ListenAndServe(":"+port, nil))
+
+	r := mux.NewRouter().StrictSlash(true)
+
+	r.HandleFunc("/qr", qrgenerator).Methods("POST")
+	r.HandleFunc("/", homeHandler).Methods("GET")
+	r.HandleFunc("/generator/", viewCodeHandler).Methods("POST")
+
+	loggedRouter := handlers.LoggingHandler(os.Stdout, r)
+
+	
+
+	log.Println("listening on http://localhost:"+port)
+	log.Println(http.ListenAndServe(":"+port, loggedRouter))	
 }
 
-func homeHandler( w http.ResponseWriter, r * http.Request) {
+func qrgenerator(w http.ResponseWriter, r *http.Request) {
+	
+
+	reqBody, err := ioutil.ReadAll(r.Body)
+
+	if err != nil {
+		log.Println("Problem reading the body")
+	}
+
+	var text QrText
+
+	json.Unmarshal(reqBody, &text)
+
+	
+	log.Println(text)
+
+	qrCode, err := qr.Encode(text.Text, qr.L, qr.Auto)
+	if err != nil {
+		log.Println("Problem encoding the text")
+	}
+
+	qrCode, _ = barcode.Scale(qrCode, 128, 128)
+
+	png.Encode(w, qrCode)
+}
+
+func homeHandler(w http.ResponseWriter, r *http.Request) {
 	p := Page{Title: "QR Code Generator"}
 
-	t, _ := template.ParseFiles("generator.html")
+	t, err := template.ParseFiles("generator.html")
+	if err != nil {
+		log.Println("Problem parsing html file")
+	}
 
 	t.Execute(w, p)
 }
@@ -46,7 +98,7 @@ func viewCodeHandler(w http.ResponseWriter, r *http.Request) {
 	dataString := r.FormValue("dataString")
 
 	qrCode, _ := qr.Encode(dataString, qr.L, qr.Auto)
-	qrCode, _ = barcode.Scale(qrCode, 512, 512)
+	qrCode, _ = barcode.Scale(qrCode, 128, 128)
 
 	png.Encode(w, qrCode)
-}
+}  
