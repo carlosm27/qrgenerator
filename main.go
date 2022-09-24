@@ -33,7 +33,7 @@ type Page struct {
 
 func main() {
 
-	viper.SetConfigFile(".env")
+	viper.SetConfigFile()
 	viper.ReadInConfig()
 
 	//viper.SetConfigType("env")
