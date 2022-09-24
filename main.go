@@ -42,7 +42,7 @@ func main() {
 
 	//port := fmt.Sprint(viper.Get("PORT"))
 	
-	port := os.Getenv("PORT")
+	port := $"PORT"
 
 	r := mux.NewRouter().StrictSlash(true)
 
