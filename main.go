@@ -33,15 +33,16 @@ type Page struct {
 
 func main() {
 
-	viper.SetConfigFile("env")
-	viper.ReadInConfig()
+	//viper.SetConfigFile("env")
+	//viper.ReadInConfig()
 
 	//viper.SetConfigType("env")
 
 	//viper.AutomaticEnv()
 
-	port := fmt.Sprint(viper.Get("PORT"))
+	//port := fmt.Sprint(viper.Get("PORT"))
 	
+	port := os.Getenv("PORT")
 
 	r := mux.NewRouter().StrictSlash(true)
 
