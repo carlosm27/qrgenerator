@@ -1,2 +1,2 @@
 # qrgenerator
-A QR code generator written in Go
+A QR code generator written in Go using Gorilla/Mux and deployed in Railway.
