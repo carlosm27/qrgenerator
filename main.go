@@ -101,7 +101,7 @@ func viewCodeHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 	   fmt.Println(err)
 	} else {
-	   qrcode, err = barcode.Scale(qrCode, 128, 128)
+	   qrCode, err = barcode.Scale(qrCode, 128, 128)
       	   if err != nil {
     	      fmt.Println(err)
 	   } else {
