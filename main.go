@@ -107,4 +107,5 @@ func viewCodeHandler(w http.ResponseWriter, r *http.Request) {
 	   } else {
               png.Encode(w, qrCode)
            }
+	}	
 }  
