@@ -15,10 +15,10 @@ import (
 	"fmt"
 	"text/template"
 
-    //"github.com/joho/godotenv"
+    
     "github.com/spf13/viper"
     "github.com/boombuler/barcode"
-	"github.com/boombuler/barcode/qr"
+    "github.com/boombuler/barcode/qr"
 )
 
 type QrText struct {
@@ -97,8 +97,14 @@ func homeHandler(w http.ResponseWriter, r *http.Request) {
 func viewCodeHandler(w http.ResponseWriter, r *http.Request) {
 	dataString := r.FormValue("dataString")
 
-	qrCode, _ := qr.Encode(dataString, qr.L, qr.Auto)
-	qrCode, _ = barcode.Scale(qrCode, 128, 128)
-
-	png.Encode(w, qrCode)
+	qrCode, err := qr.Encode(dataString, qr.L, qr.Auto)
+	if err != nil {
+	   fmt.Println(err)
+	} else {
+	   qrcode, err = barcode.Scale(qrcode, 128, 128)
+      	   if err != nil {
+    	      fmt.Println(err)
+	   } else {
+              png.Encode(w, qrcode)
+           }
 }  
